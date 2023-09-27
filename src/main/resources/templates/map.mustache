@@ -99,12 +99,14 @@
         <div class="ResponsiveBackground">
             <div class="map" id="map" >
                 <div class="search">
-                    <input type="text">
-                    <button>검색</button>
+                    <input type="text" id="search_text">
+                    <button type="button" id="search_btn" onclick="search_ajax();">검색</button>
                     <button class="quick" id="search1_click">노외</button>
                 </div>
             </div>
             <button class="current-location" type="button" id="currentLocation">현재 위치</button>
+
+            <div id="search_result" style="display:none;"></div>
         </div>
 
     <script>
@@ -292,5 +294,63 @@
             overlay.setMap(map);
         });
     }
+
+    /////////////////////////////////////////////////////////
+    var input_text = document.getElementById("search_text");
+
+    function search_ajax(){
+        alert(input_text.value);
+
+        $.ajax({
+            url : "test.action",
+            type : 'post',
+            data : {
+                search_text : input_text.value
+            },
+            success : function(data) {
+                for(var i=0;i<markers.length;i++){
+                    markers[i].setMap(null)
+                }
+                var search_positions=[];
+
+                $.each(data,function(index, value) {
+                    var search_position = {
+                        latlng : new kakao.maps.LatLng( value.lat, value.lng ), addr: "search_test", parking_name: value.parking_name, weekday_begin_time: value.weekdayBeginTime, weekday_end_time: value.weekdayEndTime
+                    }
+                    search_positions.push(search_position);
+                    console.log(index+" : "+ search_position.latlng+","+search_position.addr+","+search_position.parking_name+","+search_position.weekday_begin_time+","+search_position.weekday_end_time);
+                })
+                console.log("success ");
+
+                var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다
+                imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
+                imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+                // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+                var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
+
+                //오버레이창과 함께 search_position 마커 생성하기
+                for(let i=0; i < search_positions.length; i++){
+                    var data = search_positions[i];
+                    displayMarker(data);
+                }
+             },
+            error : function() {
+                alert("error");
+            }
+        });
+    }
+
+
+
+
+//enter 누르면 인식되게
+input_text.addEventListener("keyup", function (event) {
+if (event.keyCode === 13) {
+event.preventDefault();
+document.getElementById("search_btn").click();
+}
+});
 </script>
 

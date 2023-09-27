@@ -1,6 +1,7 @@
 package org.teamM.parkingLot.NwParkingLot;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /*
 *Dto 클래스
@@ -13,6 +14,7 @@ Request/Reponse 반응이 일어나는 클래스로 사용해서는 안된다.
 Dto는 Entity 필드 중 일부만 사용하므로 생성자로 Entity를 받아 필드에 넣는다.
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class NwParkingLotDto {
     //DTO에서 사용할 필드(엔티티에서 불러오는 것)
@@ -31,5 +33,15 @@ public class NwParkingLotDto {
         this.lng = entity.getLng();
         this.weekdayBeginTime = entity.getWeekdayBeginTime();
         this.weekdayEndTime = entity.getWeekdayEndTime();
+    }
+
+    public NwParkingLotDto(Long id, String parking_name, Double lat, Double lng, Integer BT, Integer ET) {
+        this.id = id;
+        this.parking_name = parking_name;
+        this. lat = lat;
+        this.lng = lng;
+        this.weekdayBeginTime = BT;
+        this.weekdayEndTime = ET;
+
     }
 }
